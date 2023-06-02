@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -27,7 +28,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'usernameOrEmail' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -41,13 +42,28 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $validator = Validator::make($this->all(), [
+            'usernameOrEmail' => 'required|email',
+        ]);
 
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
+        if ($validator->fails()) {
+            if (! Auth::attempt(['username' => $this->usernameOrEmail, 'password' => $this->password], $this->boolean('remember'))) {
+                RateLimiter::hit($this->throttleKey());
+
+                throw ValidationException::withMessages([
+                    'username' => __('auth.failed'),
+                ]);
+            }
+        } else {
+            if (! Auth::attempt(['email' => $this->usernameOrEmail, 'password' => $this->password], $this->boolean('remember'))) {
+                RateLimiter::hit($this->throttleKey());
+
+                throw ValidationException::withMessages([
+                    'email' => __('auth.failed'),
+                ]);
+            }
         }
+
 
         RateLimiter::clear($this->throttleKey());
     }
