@@ -30,8 +30,8 @@ class Tweet extends Model
         return $this->belongsTo(Tweet::class, 'reply_to');
     }
 
-    public function media()
+    public function mediaFiles()
     {
-        return $this->hasMany(MediaFiles::class);
+        return $this->hasMany(MediaFile::class);
     }
 }
