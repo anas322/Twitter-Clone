@@ -29,10 +29,10 @@ class TweetResource extends JsonResource
 
 
         // dd( $this->id , $this->parent->id);
-        // if ($this->parent instanceof Tweet && $this->id !== $this->parent->id) {
-        //     // Check if the parent tweet exists and is not the same as the current tweet
-        //     $data['reply_to'] = new TweetResource($this->parent);
-        // }
+        if ($this->parent instanceof Tweet && $this->id !== $this->parent->id) {
+            // Check if the parent tweet exists and is not the same as the current tweet
+            $data['reply_to'] = new TweetResource($this->parent);
+        }
 
         return $data;
     }

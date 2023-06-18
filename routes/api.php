@@ -6,6 +6,7 @@ use App\Http\Resources\TweetResource;
 use Illuminate\Support\Facades\Route;
 use App\Http\Resources\TweetsResource;
 use App\Http\Resources\SingleTweetResource;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +59,7 @@ Route::middleware(['auth:sanctum'])->group( function () {
     });
 
     Route::get('/tweets', function () {
-        $tweets = TweetsResource::collection(Tweet::with(['user', 'mediaFiles'])->latest()->get());
+        $tweets = TweetsResource::collection(Tweet::with(['user', 'mediaFiles'])->whereNull('reply_to')->latest()->get());
         
         return response()->json([
             'tweets' => $tweets,
@@ -66,7 +67,6 @@ Route::middleware(['auth:sanctum'])->group( function () {
     });
 
     Route::get('/tweets/{tweet}', function (Tweet $tweet) {
-        // $tweet = new TweetsResource(Tweet::with(['user', 'mediaFiles'])->find($id));
         $tweet = new SingleTweetResource($tweet->load(['user', 'mediaFiles']));
 
         return response()->json([
@@ -74,12 +74,29 @@ Route::middleware(['auth:sanctum'])->group( function () {
         ]);
     });
 
-    Route::get('/test', function () {
-        $tweet = Tweet::find(14);
-        
+    Route::get('/profile/tweets/{user:username}', function (User $user) {
+        if($user){
+            $tweets = TweetsResource::collection(Tweet::with(['user', 'mediaFiles'])->where('user_id', $user->id)->latest()->get());
+
+            $tweetsCount = number_format($tweets->filter(function ($tweet){
+                    return $tweet->reply_to == null;
+                })->count());
+
+            $mediaCount = number_format($tweets->filter(function ($tweet){
+                    return $tweet->mediaFiles->count() > 0;
+                })->count());
+
+            return response()->json([
+                'tweets' => $tweets,
+                'tweetsCount' => $tweetsCount . ' Tweets',
+                'tweetsAndRepliesCount' => $tweets->count(). ' Tweets',
+                'mediaCount' => $mediaCount . ' Photos & videos',
+            ]);
+        }
         return response()->json([
-            'tweets' => $tweet->parent,
-        ]);
+            'message' => 'User not found',
+        ], 404);
     });
+    
 
 });

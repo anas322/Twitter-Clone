@@ -21,7 +21,7 @@ class TweetsResource extends JsonResource
             'content' => $this->content,
             'user' => new UserResource($this->user),
             'media' => MediaFileResource::collection($this->mediaFiles),
-            'replies' => TweetResource::collection($this->replies),
+            // 'replies' => TweetResource::collection($this->replies),
             'replies_count' => $this->replies?->count(),
             // 'reply_to' =>  new TweetsResource($this->parent),
             'created_at' => $this->getTimeDiffForHumans($this->created_at),

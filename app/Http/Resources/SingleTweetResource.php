@@ -27,7 +27,7 @@ class SingleTweetResource extends JsonResource
             'created_at' => $this->getTimeDiffForHumans($this->created_at),
         ];
 
-        if ($this->parent instanceof Tweet && $this->id != $this->parent->id) {
+        if ( $this->id != $this->parent?->id) {
             // Check if the parent tweet exists and is not the same as the current tweet
             $data['reply_to'] = new TweetResource($this->parent);
         }
