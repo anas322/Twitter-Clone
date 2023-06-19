@@ -32,6 +32,12 @@ Route::middleware(['auth:sanctum'])->group( function () {
 
     //get user tweets
     Route::get('/profile/tweets/{user:username}', [ProfileController::class , 'getUserTweets']);
+    //get user profile 
+    Route::get('/profile/{user:username}', [ProfileController::class , 'show']);
+    //update user profile
+    Route::post('/profile', [ProfileController::class , 'update']);
+    //delete user banner
+    Route::post('/profile/banner/delete', [ProfileController::class , 'deleteBanner']);
     
 
 });
