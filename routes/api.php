@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\UserController;
@@ -38,6 +39,16 @@ Route::middleware(['auth:sanctum'])->group( function () {
     Route::post('/profile', [ProfileController::class , 'update']);
     //delete user banner
     Route::post('/profile/banner/delete', [ProfileController::class , 'deleteBanner']);
+
+    //follow user
+    Route::post('/profile/{user:username}/follow', [FollowerController::class , 'follow']);
+    //unfollow user
+    Route::post('/profile/{user:username}/unfollow', [FollowerController::class , 'unfollow']);
+    //get followers
+    Route::get('/profile/{user:username}/followers', [FollowerController::class , 'getFollowers']);
+    //get following
+    Route::get('/profile/{user:username}/following', [FollowerController::class , 'getFollowing']);
+
     
 
 });

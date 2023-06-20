@@ -18,13 +18,18 @@ class ProfileResource extends JsonResource
     public function toArray(Request $request): array
     {   
         return [
-            'bio' => $this->bio,
+            'bio' => $this->bio ,
             'location' => $this->location,
             'avatar' => $this->avatar ? $this->getAvatarUrl($this->avatar) : null,
             'banner' => $this->banner ? $this->getBannerUrl($this->banner) : null,
             'joined' => $this->created_at->format('F Y'),   
             'user' => new UserResource($this->user),
             'ownsProfile' => $request->user()->can('ownsProfile', $this->resource),
+            'isAuthUserFollowThisProfile' => $request->user()->following->contains($this->user),
+            'isThisProfileFollowAuthUser' => $this->user->following->contains($request->user()),
+            'followersCount' => number_format($this->user->followers()->count()),
+            'followingCount' => number_format($this->user->following()->count()),
+
         ];
     }
 

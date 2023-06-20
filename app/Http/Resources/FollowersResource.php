@@ -3,9 +3,10 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\Profile\ProfileResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class FollowersResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +16,7 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' =>$this->email,
-            'username' => '@' . $this->username,
+            'profile' => new ProfileResource($this->profile),
         ];
     }
 }
