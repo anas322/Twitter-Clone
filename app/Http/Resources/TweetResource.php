@@ -23,6 +23,10 @@ class TweetResource extends JsonResource
             'media' => MediaFileResource::collection($this->mediaFiles),
             // 'replies' => TweetResource::collection($this->replies),
             'replies_count' => $this->replies?->count(),
+            'retweets_count' => $this->retweets?->count(),
+            'retweets_with_quotes_count' => $this->retweetsWithQuotes?->count(),
+            'retweets_without_quotes_count' => $this->retweetsWithoutQuotes?->count(),
+            'isRetweetedByAuthUser' => $this->isRetweetedBy(auth()->user()),
             // 'reply_to' => new TweetResource($this->parent),
             'isLikedByAuthUser' => $this->isLikedBy(auth()->user()),
             'likes_count' => number_format($this->likes?->count()),
@@ -38,6 +42,7 @@ class TweetResource extends JsonResource
             // Check if the parent tweet exists and is not the same as the current tweet
             $data['reply_to'] = new TweetResource($this->parent);
         }
+
 
         return $data;
     }

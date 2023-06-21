@@ -22,8 +22,9 @@ class StoreTweetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'required|string|max:280',
+            'content' => ['string','required_without_all:retweet_of,selectedImage','max:280'],
             'reply_to' => 'nullable|integer',
+            'retweet_of' => 'nullable|integer',
             'selectedImage' => 'nullable|array',
             'selectedImage.*' => 'required|file|mimes:jpg,jpeg,png,gif,mp4|max:100000'
         ];

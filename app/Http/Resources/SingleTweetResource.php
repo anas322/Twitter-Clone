@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Tweet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,6 +22,11 @@ class SingleTweetResource extends JsonResource
             'media' => MediaFileResource::collection($this->mediaFiles),
             'replies' => TweetResource::collection($this->replies),
             'replies_count' => $this->replies?->count(),
+            'retweet_of' => new TweetResource($this->retweetOf),
+            'retweets_count' => $this->retweets?->count(),
+            'retweets_with_quotes_count' => $this->retweetsWithQuotes?->count(),
+            'retweets_without_quotes_count' => $this->retweetsWithoutQuotes?->count(),
+            'isRetweetedByAuthUser' => $this->isRetweetedBy(auth()->user()),
             // 'reply_to' => new TweetResource($this->parent),
             'isLikedByAuthUser' => $this->isLikedBy(auth()->user()),
             'likes_count' => number_format($this->likes?->count()),
@@ -37,6 +41,7 @@ class SingleTweetResource extends JsonResource
             $data['reply_to'] = new TweetResource($this->parent);
         }
 
+
         return $data;
     }
 
@@ -49,7 +54,7 @@ class SingleTweetResource extends JsonResource
     }
 
     private function getFullFormat($time){
-        $date = Carbon::createFromFormat('Y-m-d H:i:s', '2023-06-13 11:23:00');
+        $date = Carbon::createFromFormat('Y-m-d H:i:s', $time);
         $formattedDate = $date->format('h:i A · M j, Y');
         return $formattedDate;
     }

@@ -43,7 +43,8 @@ class TweetController extends Controller
             // create tweet
             $tweet = auth()->user()->tweets()->create([
                 'content' => $request->content,
-                'reply_to' => $request->reply_to ?? null
+                'reply_to' => $request->reply_to ?? null,
+                'retweet_of' => $request->retweet_of ?? null,
             ]);
 
             // create media files if exist
@@ -51,7 +52,8 @@ class TweetController extends Controller
 
             return response()->json([
                 'message' => 'success',
-                'tweet' => new TweetResource($tweet)
+                // 'tweet' => new TweetResource($tweet)
+                'tweet' => new SingleTweetResource($tweet)
             ]);
         } catch (\Exception $e) {
             // handle the exception and return an appropriate response

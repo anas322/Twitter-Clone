@@ -11,7 +11,8 @@ class Tweet extends Model
 
     protected $fillable = [
         'content',
-        'reply_to'
+        'reply_to',
+        'retweet_of'
     ];
 
 
@@ -28,6 +29,16 @@ class Tweet extends Model
     public function parent()
     {
         return $this->belongsTo(Tweet::class, 'reply_to');
+    }
+
+    public function retweets()
+    {
+        return $this->hasMany(Tweet::class, 'retweet_of');
+    }
+
+    public function retweetOf()
+    {
+        return $this->belongsTo(Tweet::class, 'retweet_of');
     }
 
     public function mediaFiles()
@@ -48,5 +59,19 @@ class Tweet extends Model
     public function isLikedBy(User $user)
     {
         return $this->likes->contains('user_id', $user->id);
+    }
+    public function isRetweetedBy(User $user)
+    {
+        return $this->retweets->contains('user_id', $user->id);
+    }
+
+    public function retweetsWithQuotes()
+    {
+        return $this->hasMany(Tweet::class, 'retweet_of')->whereNotNull('content');
+    }
+
+    public function retweetsWithoutQuotes()
+    {
+        return $this->hasMany(Tweet::class, 'retweet_of')->whereNull('content');
     }
 }
