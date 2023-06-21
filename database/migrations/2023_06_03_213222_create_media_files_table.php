@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('url');
             $table->string('type');
-            $table->foreignId('tweet_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('tweet_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

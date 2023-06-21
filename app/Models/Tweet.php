@@ -34,4 +34,19 @@ class Tweet extends Model
     {
         return $this->hasMany(MediaFile::class);
     }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function likesCount()
+    {
+        return $this->likes->count();
+    }
+    
+    public function isLikedBy(User $user)
+    {
+        return $this->likes->contains('user_id', $user->id);
+    }
 }

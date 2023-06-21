@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->unique()->after('id');
+        Schema::create('likes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDeleteCascade()->onUpdateCascade();
+            $table->foreignId('tweet_id')->constrained()->onDeleteCascade()->onUpdateCascade();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['username']);
-        });
+        Schema::dropIfExists('likes');
     }
 };

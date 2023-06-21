@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('tweets', function (Blueprint $table) {
             $table->id();
             $table->text('content');
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('reply_to')->nullable()->constrained('tweets');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('reply_to')->nullable()->constrained('tweets')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

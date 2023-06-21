@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tweet;
 use App\Http\Resources\TweetResource;
 use App\Http\Resources\TweetsResource;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreTweetRequest;
 use App\Http\Requests\UpdateTweetRequest;
 use App\Http\Resources\SingleTweetResource;
@@ -110,6 +111,31 @@ class TweetController extends Controller
      */
     public function destroy(Tweet $tweet)
     {
-        //
+        $this->authorize('delete', $tweet);
+        
+        try {
+            $this->deleteMediaFiles($tweet);
+            $tweet->delete();
+
+            return response()->json([
+                'message' => 'Tweet deleted successfully.',
+            ]);
+
+        } catch (\Exception $e) {
+            // handle the exception and return an appropriate response
+            return response()->json([
+                'message' => 'An error occurred while deleting the tweet.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    private function deleteMediaFiles($tweet)
+    {
+        if($tweet->mediaFiles && count($tweet->mediaFiles) > 0) {
+            foreach ($tweet->mediaFiles as $mediaFile) {
+                Storage::delete('public/tweets/' . $mediaFile->url);
+            }
+        }
     }
 }

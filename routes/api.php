@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\UserController;
@@ -30,6 +31,8 @@ Route::middleware(['auth:sanctum'])->group( function () {
     Route::get('/tweets', [TweetController::class , 'index']);
     //get single tweet
     Route::get('/tweets/{tweet}', [TweetController::class , 'getSingleTweet']);
+    //delete tweet
+    Route::delete('/tweets/{tweet}', [TweetController::class , 'destroy']);
 
     //get user tweets
     Route::get('/profile/tweets/{user:username}', [ProfileController::class , 'getUserTweets']);
@@ -48,6 +51,11 @@ Route::middleware(['auth:sanctum'])->group( function () {
     Route::get('/profile/{user:username}/followers', [FollowerController::class , 'getFollowers']);
     //get following
     Route::get('/profile/{user:username}/following', [FollowerController::class , 'getFollowing']);
+
+    //like tweet
+    Route::post('/tweets/{tweet}/like', [LikeController::class , 'like']);
+    //unlike tweet
+    Route::post('/tweets/{tweet}/unlike', [LikeController::class , 'unlike']);
 
     
 

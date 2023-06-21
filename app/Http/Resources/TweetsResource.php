@@ -24,6 +24,9 @@ class TweetsResource extends JsonResource
             // 'replies' => TweetResource::collection($this->replies),
             'replies_count' => $this->replies?->count(),
             // 'reply_to' =>  new TweetsResource($this->parent),
+            'isLikedByAuthUser' => $this->isLikedBy(auth()->user()),
+            'likes_count' => number_format($this->likes?->count()),
+            'isUserFollowTweetAuthor' => $this->isUserFollowTweetAuthor(auth()->user()),
             'created_at' => $this->getTimeDiffForHumans($this->created_at),
         ];
 
@@ -36,20 +39,26 @@ class TweetsResource extends JsonResource
         return $data;
     }
 
-    private function getTimeDiffForHumans($time)
+    private function isUserFollowTweetAuthor($user)
     {
-        $carbonTimestamp = Carbon::createFromTimestamp($time);
+        if ($user) {
+            return $this->user->followers->contains($user);
+        }
+        return false;
+    }
 
+    private function getTimeDiffForHumans($time)
+    { 
         // Calculate the difference in hours between the timestamp and the current time
-        $diffInHours = $carbonTimestamp->diffInHours();
+        $diffInHours = $time->diffInHours();
 
         // Check if the timestamp is within the last 24 hours
         if ($diffInHours < 24) {
             // Format the time without the 'ago' word
-            $formattedTime = $carbonTimestamp->diffForHumans(['syntax' => Carbon::DIFF_ABSOLUTE]);
+            $formattedTime = $time->diffForHumans(['syntax' => Carbon::DIFF_ABSOLUTE]);
         } else {
             // Format the time as a specific date
-            $formattedTime = $carbonTimestamp->format('j M');
+            $formattedTime = $time->format('j M');
         }
 
         return $formattedTime;

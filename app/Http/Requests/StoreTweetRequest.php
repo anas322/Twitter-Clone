@@ -25,7 +25,7 @@ class StoreTweetRequest extends FormRequest
             'content' => 'required|string|max:280',
             'reply_to' => 'nullable|integer',
             'selectedImage' => 'nullable|array',
-            'selectedImage.*' => 'required|file|mimes:jpg,jpeg,png,gif,mp4,webm,mp3,wav|max:100000'
+            'selectedImage.*' => 'required|file|mimes:jpg,jpeg,png,gif,mp4|max:100000'
         ];
     }
 }

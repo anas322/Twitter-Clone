@@ -9,6 +9,6 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        return $request->user();
+        return new UserResource($request->user());
     }
 }
