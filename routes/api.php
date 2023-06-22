@@ -27,6 +27,8 @@ Route::middleware(['auth:sanctum'])->group( function () {
     
     //create tweet 
     Route::post('/user/tweets', [TweetController::class , 'store']);
+    //unretweet
+    Route::post('/tweets/{tweet}/unretweet', [TweetController::class , 'unretweet']);
     //get all tweets
     Route::get('/tweets', [TweetController::class , 'index']);
     //get single tweet

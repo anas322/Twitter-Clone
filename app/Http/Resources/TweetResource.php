@@ -32,7 +32,7 @@ class TweetResource extends JsonResource
             'likes_count' => number_format($this->likes?->count()),
             'isUserFollowTweetAuthor' => $this->isUserFollowTweetAuthor(auth()->user()),
             'created_at' => $this->getTimeDiffForHumans($this->created_at),
-
+            'createed_at_full' => $this->getFullFormat($this->created_at),
             
         ];
 
@@ -70,5 +70,11 @@ class TweetResource extends JsonResource
         }
 
         return $formattedTime;
+    }
+
+    private function getFullFormat($time){
+        $date = Carbon::createFromFormat('Y-m-d H:i:s', $time);
+        $formattedDate = $date->format('h:i A · M j, Y');
+        return $formattedDate;
     }
 }

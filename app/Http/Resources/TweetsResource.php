@@ -21,7 +21,7 @@ class TweetsResource extends JsonResource
             'content' => $this->content,
             'user' => new UserResource($this->user),
             'media' => MediaFileResource::collection($this->mediaFiles),
-            // 'replies' => TweetResource::collection($this->replies),
+            'replies' => TweetResource::collection($this->replies),
             'replies_count' => $this->replies?->count(),
             'retweet_of' => new TweetResource($this->retweetOf),
             'retweets_count' => $this->retweets?->count(),
@@ -33,6 +33,7 @@ class TweetsResource extends JsonResource
             'likes_count' => number_format($this->likes?->count()),
             'isUserFollowTweetAuthor' => $this->isUserFollowTweetAuthor(auth()->user()),
             'created_at' => $this->getTimeDiffForHumans($this->created_at),
+            'createed_at_full' => $this->getFullFormat($this->created_at),
         ];
 
         
@@ -67,5 +68,11 @@ class TweetsResource extends JsonResource
         }
 
         return $formattedTime;
+    }
+
+    private function getFullFormat($time){
+        $date = Carbon::createFromFormat('Y-m-d H:i:s', $time);
+        $formattedDate = $date->format('h:i A · M j, Y');
+        return $formattedDate;
     }
 }

@@ -79,6 +79,25 @@ class TweetController extends Controller
         }
     }
 
+    public function unretweet(Tweet $tweet)
+    {
+        try {
+
+            $tweet->retweets()->where('user_id', auth()->user()->id)->delete();
+
+            return response()->json([
+                'message' => 'success',
+                'tweet' => new SingleTweetResource($tweet)
+            ]);
+        } catch (\Exception $e) {
+            // handle the exception and return an appropriate response
+            return response()->json([
+                'message' => 'An error occurred while unretweeting the tweet.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * Display the specified resource.
      */
