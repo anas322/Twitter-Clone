@@ -64,6 +64,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
     }
+
+    public function chats()
+    {
+        return $this->hasMany(Chat::class);
+    }
+
     
 
     protected static function booted(): void

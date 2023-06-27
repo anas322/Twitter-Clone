@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\FollowerController;
-use App\Http\Controllers\LikeController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TweetController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TweetController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FollowerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,14 @@ Route::middleware(['auth:sanctum'])->group( function () {
     //unlike tweet
     Route::post('/tweets/{tweet}/unlike', [LikeController::class , 'unlike']);
 
+    //get sender and recipient messages 
+    // NOTE: this user is the recipient
+    Route::get('/messages/{user}', [ChatController::class , 'getMessages']);
+    //get user and recipient chat session
+    Route::get('/messages/{user}/session', [ChatController::class , 'getSession']);
+    //get user connections chats 
+    Route::get('/messages', [ChatController::class , 'getChats']);
+    //send message
+    Route::post('/messages/{user}', [ChatController::class , 'sendMessage']);
     
-
 });

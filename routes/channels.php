@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Chat;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,13 @@ use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
+});
+
+
+Broadcast::channel('message.{id}.{recipient_id}', function ($user, $_ ,$recipient_id) {
+    return true;
+    if( Chat::between($user->id,$recipient_id)->exists()) {
+        return true;
+    }
+
 });

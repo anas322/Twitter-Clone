@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tweet;
-use App\Http\Resources\TweetResource;
 use App\Http\Resources\TweetsResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreTweetRequest;
