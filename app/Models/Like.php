@@ -13,5 +13,15 @@ class Like extends Model
         'user_id',
         'tweet_id',
     ];
+
+    public function tweet()
+    {
+        return $this->belongsTo(Tweet::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     
 }

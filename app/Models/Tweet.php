@@ -74,4 +74,5 @@ class Tweet extends Model
     {
         return $this->hasMany(Tweet::class, 'retweet_of')->whereNull('content');
     }
+
 }

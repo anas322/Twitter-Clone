@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\NotificationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,5 +70,8 @@ Route::middleware(['auth:sanctum'])->group( function () {
     Route::get('/messages', [ChatController::class , 'getChats']);
     //send message
     Route::post('/messages/{user}', [ChatController::class , 'sendMessage']);
+
+    //get all notifications
+    Route::get('/notifications', [NotificationsController::class , 'index']);
     
 });
