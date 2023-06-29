@@ -42,6 +42,7 @@ class NotifyUser extends Notification
 
         $data =  [
             'typeOFtweet' => $this->type,
+            'read_at' => null,
         ];
 
         if($this->type == 'tweet' || $this->type == 'retweet'){
