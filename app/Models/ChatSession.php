@@ -13,12 +13,19 @@ class ChatSession extends Model
 
 
     protected $fillable = [
-        'uuid'
+        'uuid',
+        'first_user',
+        'second_user',
     ];
     
     public function chats()
     {
         return $this->hasMany(Chat::class,'session_id');
+    }
+
+    public function latestChat()
+    {
+        return $this->hasOne(Chat::class,'session_id')->latest();
     }
 
  
@@ -39,5 +46,12 @@ class ChatSession extends Model
     {
         return ['uuid'];
     }
+
+    public function scopeBetween($query,$first_user,$second_user)
+    {
+        return $query->where('first_user',$first_user)->where('second_user',$second_user)
+        ->orWhere('first_user',$second_user)->where('second_user',$first_user);
+    }
+    
 
 }

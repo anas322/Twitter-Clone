@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ChatMessage;
 use App\Models\Chat;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Resources\Chat\ChatResource;
-use App\Http\Resources\UserResource;
+use App\Events\ChatMessage;
 use App\Models\ChatSession;
+use Illuminate\Http\Request;
+use App\Notifications\NewMessage;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\Chat\ChatResource;
+use App\Http\Resources\Chat\ChatSessionResource;
 
 class ChatController extends Controller
 {
@@ -25,7 +27,9 @@ class ChatController extends Controller
 
     public function getSession(User $user)
     {
-        $session = Chat::between(auth()->id(),$user->id)->first()?->session ?? ChatSession::create();
+        $session = ChatSession::between(auth()->id(),$user->id)->first() ?? ChatSession::create([
+            'first_user' => auth()->id(),
+            'second_user' => $user->id,]);
         
 
         return response()->json([
@@ -36,17 +40,35 @@ class ChatController extends Controller
     public function getChats()
     {
         //get all chats that the user is involved in and group them by the recipient
-        $chats = auth()->user()->chats()->with('recipient')
-        ->whereIn('id', function ($query) {
-        $query->selectRaw('MAX(id)')
-            ->from('chats')
-            ->groupBy('recipient_id','user_id');
-        })
-        ->latest()->get();
+        // $chats = auth()->user()->chats()->with('recipient')
+        // ->whereIn('id', function ($query) {
+        // $query->selectRaw('MAX(id)')
+        //     ->from('chats')
+        //     ->groupBy('recipient_id','user_id');
+        // })
+        // ->latest()->get();
+        
+        $chatSessions = ChatSession::where('first_user',auth()->id())
+                ->orWhere('second_user',auth()->id())
+                ->get();
 
+        if($chatSessions->isEmpty()){
+            return response()->json([
+                'chats' => []
+            ]);
+        }
+
+        $chats = ChatSessionResource::collection($chatSessions);
+        
+        if(json_encode($chats[0]) == '[]'){
+            return response()->json([
+                'chats' => []
+            ]);
+        }
 
         return response()->json([
-            'chats' => ChatResource::collection($chats)
+            // 'chats' => ChatResource::collection($chats)
+            'chats' => $chats
         ]);
     }
 
@@ -59,8 +81,11 @@ class ChatController extends Controller
            ]);
 
           //get the session between the authenticated user and the recipient first and if it doesn't exist create it
-            $firstChat = Chat::between(auth()->id(),$user->id)->first();
-            $session = $firstChat ? $firstChat->session : ChatSession::where('uuid',$request->session)->first();
+            $firstChat = ChatSession::between(auth()->id(),$user->id)->first();
+            $session = $firstChat ?? ChatSession::create([
+               'first_user' => auth()->id(),
+               'second_user' => $user->id,
+              ]);
 
            $chat = $request->user()->chats()->create([
                'recipient_id' => $user->id,
@@ -70,6 +95,10 @@ class ChatController extends Controller
 
    
             broadcast(new ChatMessage($chat))->toOthers();
+            
+            $user->notify(
+                new NewMessage($session)
+            );
    
            return response()->json([
                'mssg' => new ChatResource($chat)

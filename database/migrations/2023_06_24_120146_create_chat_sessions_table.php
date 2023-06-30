@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('chat_sessions', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->foreignId('first_user')->constrained('users')->onDelete('cascade');
+            $table->foreignId('second_user')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
