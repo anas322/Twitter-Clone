@@ -25,6 +25,8 @@ Route::middleware(['auth:sanctum'])->group( function () {
 
     //get authenticated user
     Route::get('/user', [UserController::class , 'index']);
+    //get search users
+    Route::get('/user/{search}', [UserController::class , 'search']);
 
     
     //create tweet 
