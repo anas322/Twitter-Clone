@@ -75,4 +75,13 @@ class Tweet extends Model
         return $this->hasMany(Tweet::class, 'retweet_of')->whereNull('content');
     }
 
+    public function bookmarks()
+    {
+        return $this->belongsToMany(User::class, 'bookmarks', 'tweet_id', 'user_id')->withTimestamps();
+    }
+    
+    public function isBookmarkedBy(User $user)
+    {
+        return $this->bookmarks->contains('id', $user->id);
+    }
 }

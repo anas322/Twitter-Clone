@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookmarkController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\LikeController;
@@ -57,6 +58,14 @@ Route::middleware(['auth:sanctum'])->group( function () {
     Route::get('/profile/{user:username}/followers', [FollowerController::class , 'getFollowers']);
     //get following
     Route::get('/profile/{user:username}/following', [FollowerController::class , 'getFollowing']);
+
+    //get user bookmarks
+    Route::get('/bookmarks', [BookmarkController::class , 'getBookmarks']);    
+    //bookmark tweet
+    Route::post('/tweets/{tweet}/bookmark', [BookmarkController::class , 'bookmark']);
+    //unbookmark tweet
+    Route::post('/tweets/{tweet}/unbookmark', [BookmarkController::class , 'unbookmark']);
+    
 
     //like tweet
     Route::post('/tweets/{tweet}/like', [LikeController::class , 'like']);

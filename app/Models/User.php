@@ -70,7 +70,16 @@ class User extends Authenticatable
         return $this->hasMany(Chat::class);
     }
 
-    
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
+    public function tweetsThroughBookmarks()
+    {
+        return $this->hasManyThrough(Tweet::class, Bookmark::class, 'user_id', 'id', 'id', 'tweet_id');
+    }
+
 
     protected static function booted(): void
     {

@@ -32,6 +32,8 @@ class TweetsResource extends JsonResource
             'isLikedByAuthUser' => $this->isLikedBy(auth()->user()),
             'likes_count' => number_format($this->likes?->count()),
             'isUserFollowTweetAuthor' => $this->isUserFollowTweetAuthor(auth()->user()),
+            'isBookmarkedByAuthUser' => $this->isBookmarkedBy(auth()->user()),
+            'bookmarks_count' => number_format($this->bookmarks?->count()),
             'created_at' => $this->getTimeDiffForHumans($this->created_at),
             'createed_at_full' => $this->getFullFormat($this->created_at),
         ];
