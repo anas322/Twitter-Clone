@@ -15,17 +15,14 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 class NotifyUser extends Notification
 {
     use Queueable;
-
-    /**
-     * Create a new notification instance.
-     * @object object<\App\Models\User, App\Model\Like, App\Model\Tweet, App\Model\Follower>
-     */
-    public function __construct(
-        public object $object,
-        public string $type
-    )
+    
+    public $object;
+    public $type;
+    
+    public function __construct(object $object, string $type)
     {
-        //
+        $this->object = $object;
+        $this->type = $type;
     }
 
     /**

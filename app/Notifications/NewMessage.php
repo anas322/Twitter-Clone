@@ -12,14 +12,15 @@ class NewMessage extends Notification
 {
     use Queueable;
 
+    public ChatSession $chat;
     /**
      * Create a new notification instance.
      */
     public function __construct(
-        public ChatSession $chat,
+        ChatSession $chat,
     )
     {
-        //
+        $this->chat = $chat;
     }
 
     /**
